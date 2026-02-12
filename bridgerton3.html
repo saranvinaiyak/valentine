@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Most Draconic Valentine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f7f1e6;
+      --gold: #c2a14d;
+      --sage: #7c8c6a;
+      --ink: #2c2a26;
+      --paper: #efe6d3;
+      --wax: #8b1e1e;
+      --bridgerton-blue: #5b7da3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top, #f6efdc, #e6ddc8);
+      overflow: hidden; /* Prevents scrollbars if the button hits the edge */
+    }
+
+    /* Envelope Overlay */
+    .open-overlay { position: fixed; inset: 0; background: #2c2a26; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--cream); font-family: 'Great Vibes', cursive; font-size: 2.3rem; cursor: pointer; z-index: 100; transition: opacity 0.8s; gap: 2rem; }
+    .open-overlay.hidden { opacity: 0; pointer-events: none; }
+    
+    .envelope { width: 240px; height: 160px; position: relative; background: var(--paper); border: 2px solid var(--gold); border-radius: 6px; }
+    .envelope-top { position: absolute; top: 0; left: 0; width: 100%; height: 55%; background: var(--paper); clip-path: polygon(0 0, 100% 0, 50% 100%); border-bottom: 2px solid var(--gold); transform-origin: top; transition: transform 0.8s; z-index: 3; }
+    body.open .envelope-top { transform: rotateX(160deg); }
+    .wax { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #8b1e1e; border-radius: 50%; z-index: 4; transition: opacity 0.5s; }
+    body.open .wax { opacity: 0; }
+
+    /* Invitation Card */
+    .invitation {
+      background: var(--cream);
+      width: 90%;
+      max-width: 500px;
+      padding: 2.5rem;
+      border: 10px solid transparent;
+      border-image: radial-gradient(var(--bridgerton-blue) 20%, transparent 25%) 1;
+      background-clip: padding-box;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1s ease-out;
+    }
+    body.open .invitation { opacity: 1; transform: translateY(0); }
+
+    .dragon-icon { width: 100px; margin-bottom: 10px; border-radius: 10px; }
+    .host { font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: var(--bridgerton-blue); }
+    #inkText { font-family: 'Great Vibes', cursive; font-size: 2.2rem; display: block; min-height: 40px; margin: 10px 0; }
+    
+    h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; margin-bottom: 15px; }
+    .romantic-quote { font-size: 1.1rem; line-height: 1.4; color: #444; }
+    
+    #beggingQuoteArea {
+      height: 40px;
+      margin: 15px 0;
+      font-weight: bold;
+      color: #b22222;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-group { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
+    
+    button {
+      padding: 12px 30px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      border: 2px solid var(--bridgerton-blue);
+    }
+    
+    #yesBtn { background: var(--bridgerton-blue); color: white; transition: transform 0.2s; }
+    #noBtn { background: white; color: var(--bridgerton-blue); transition: none; z-index: 999; }
+
+    .signature { font-family: 'Great Vibes', cursive; font-size: 2.2rem; margin-top: 15px; }
+  </style>
+</head>
+<body>
+
+<div class="open-overlay" id="overlay">
+  <div class="envelope"><div class="envelope-top"></div><div class="wax"></div></div>
+  <span>Tap to Unseal ✉️</span>
+</div>
+
+<div class="invitation" id="invitationCard">
+  <img src="https://media1.tenor.com/m/EbfWqDxOwwoAAAAC/how-to-train-your-dragon-toothless.gif" class="dragon-icon">
+  <div class="host">Dearest Valentine</div>
+  <div id="inkText"></div>
+
+  <h1>Will you be the Toothless to my Light Fury?</h1>
+
+  <p class="romantic-quote">
+    "Dearest, I burn for you... and I'd fly to the <br>
+    ends of the Hidden World just to see you smile."
+  </p>
+
+  <div id="beggingQuoteArea"></div>
+
+  <div class="btn-group">
+    <button id="yesBtn">Accept</button>
+    <button id="noBtn">Decline</button>
+  </div>
+
+  <div class="signature">— Your Dragon Rider</div>
+</div>
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<script>
+  const overlay = document.getElementById('overlay');
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const beggingArea = document.getElementById('beggingQuoteArea');
+  const ink = document.getElementById('inkText');
+
+  const beggingQuotes = [
+    "Please click YES 🥺",
+    "Are you sure? I'm really nice 😭",
+    "Think about it again 💔",
+    "My heart can't take this 😩",
+    "Come onnnn just press YES 😭💖",
+    "You know you want to 😏",
+    "Don't break my virtual heart 💘"
+  ];
+
+  overlay.addEventListener('click', () => {
+    document.body.classList.add('open');
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.remove();
+      const name = "My Diamond";
+      let i = 0;
+      const timer = setInterval(() => {
+        ink.textContent += name[i];
+        i++;
+        if (i === name.length) clearInterval(timer);
+      }, 150);
+    }, 800);
+  });
+
+  function moveButton() {
+    // 1. Get exact button size
+    const rect = noBtn.getBoundingClientRect();
+    const bWidth = rect.width + 100;
+    const bHeight = rect.height + 100;
+
+    // 2. Define strict limits (Viewport minus button size minus padding)
+    const padding = 100; 
+    const maxX = (window.innerWidth/2) - bWidth - padding;
+    const maxY = (window.innerHeight) - bHeight - padding;
+    console.log(maxX + ' ' + maxY);
+
+    // 3. Ensure coordinates never go below padding
+    const randomX = Math.floor(Math.random() * (maxX - padding + 1)) + padding;
+    const randomY = Math.floor(Math.random() * (maxY - padding + 1)) + padding;
+
+    // 4. Apply Fixed positioning
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = `${randomX}px`;
+    noBtn.style.top = `${randomY}px`;
+
+    // 5. Update the separate quote area
+    beggingArea.textContent = beggingQuotes[Math.floor(Math.random() * beggingQuotes.length)];
+    
+    // 6. Bonus: Make the YES button grow slightly bigger to make it easier to hit
+    const currentScale = yesBtn.style.transform.replace(/[^0-9.]/g, '') || 1;
+    yesBtn.style.transform = `scale(${parseFloat(currentScale) + 0.05})`;
+  }
+
+  noBtn.addEventListener('mouseover', moveButton);
+  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+
+  yesBtn.addEventListener('click', () => {
+    document.getElementById('invitationCard').innerHTML = `
+        <img src="https://media.tenor.com/TA5CMbvwEY4AAAAj/love-friends.gif" width="256" height="254.72000000000003" alt="toothless and light fury from how to train your dragon standing next to each other" style="max-width: 280px; background-color: unset;" fetchpriority="high">
+        <h1 style="font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: var(--bridgerton-blue); margin-top:15px;">I Burn For You! ❤️</h1>
+      <p style="font-style: italic;">The Ton shall talk of nothing else.</p>
+      <div class="signature">— Forever Yours</div>
+    `;
+  });
+  //   
+</script>
+</body>
+</html>
