@@ -25,18 +25,44 @@
       justify-content: center;
       font-family: 'Playfair Display', serif;
       color: var(--ink);
-      background: radial-gradient(circle at top, #f6efdc, #e6ddc8);
-      overflow: hidden; /* Prevents scrollbars if the button hits the edge */
+      overflow: hidden; 
+      
+      /* --- NEW FLORAL/LACE BACKGROUND --- */
+      background-color: #dbe4eb; /* Soft Blue Base */
+      background-image: 
+        /* Lace texture patterns */
+        radial-gradient(circle at 100% 50%, transparent 20%, rgba(255,255,255,0.3) 21%, rgba(255,255,255,0.3) 34%, transparent 35%, transparent),
+        radial-gradient(circle at 0% 50%, transparent 20%, rgba(255,255,255,0.3) 21%, rgba(255,255,255,0.3) 34%, transparent 35%, transparent),
+        /* Center glow */
+        radial-gradient(circle at 50% 50%, #f7f1e6 0%, rgba(219, 228, 235, 0) 60%);
+      background-size: 60px 60px, 60px 60px, 100% 100%;
     }
 
-    /* Envelope Overlay */
-    .open-overlay { position: fixed; inset: 0; background: #2c2a26; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--cream); font-family: 'Great Vibes', cursive; font-size: 2.3rem; cursor: pointer; z-index: 100; transition: opacity 0.8s; gap: 2rem; }
+    /* Envelope Overlay - Now Transparent! */
+    .open-overlay { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.2); /* See-through dark tint */
+      backdrop-filter: blur(3px);      /* Blur the background slightly */
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      color: var(--cream); 
+      font-family: 'Great Vibes', cursive; 
+      font-size: 2.3rem; 
+      cursor: pointer; 
+      z-index: 100; 
+      transition: opacity 0.8s; 
+      gap: 2rem; 
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
     .open-overlay.hidden { opacity: 0; pointer-events: none; }
     
-    .envelope { width: 240px; height: 160px; position: relative; background: var(--paper); border: 2px solid var(--gold); border-radius: 6px; }
+    .envelope { width: 240px; height: 160px; position: relative; background: var(--paper); border: 2px solid var(--gold); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .envelope-top { position: absolute; top: 0; left: 0; width: 100%; height: 55%; background: var(--paper); clip-path: polygon(0 0, 100% 0, 50% 100%); border-bottom: 2px solid var(--gold); transform-origin: top; transition: transform 0.8s; z-index: 3; }
     body.open .envelope-top { transform: rotateX(160deg); }
-    .wax { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #8b1e1e; border-radius: 50%; z-index: 4; transition: opacity 0.5s; }
+    .wax { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #8b1e1e; border-radius: 50%; z-index: 4; transition: opacity 0.5s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     body.open .wax { opacity: 0; }
 
     /* Invitation Card */
@@ -92,7 +118,7 @@
 
 <div class="open-overlay" id="overlay">
   <div class="envelope"><div class="envelope-top"></div><div class="wax"></div></div>
-  <span>Tap to Unseal ✉️</span>
+  <span style="margin-top: 20px;">Tap to Unseal ✉️</span>
 </div>
 
 <div class="invitation" id="invitationCard">
@@ -150,30 +176,27 @@
   });
 
   function moveButton() {
-    // 1. Get exact button size
+
     const rect = noBtn.getBoundingClientRect();
     const bWidth = rect.width + 100;
     const bHeight = rect.height + 100;
 
-    // 2. Define strict limits (Viewport minus button size minus padding)
+
     const padding = 100; 
     const maxX = (window.innerWidth/2) - bWidth - padding;
     const maxY = (window.innerHeight) - bHeight - padding;
-    console.log(maxX + ' ' + maxY);
 
     // 3. Ensure coordinates never go below padding
     const randomX = Math.floor(Math.random() * (maxX - padding + 1)) + padding;
     const randomY = Math.floor(Math.random() * (maxY - padding + 1)) + padding;
 
-    // 4. Apply Fixed positioning
+
     noBtn.style.position = 'fixed';
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
 
-    // 5. Update the separate quote area
     beggingArea.textContent = beggingQuotes[Math.floor(Math.random() * beggingQuotes.length)];
     
-    // 6. Bonus: Make the YES button grow slightly bigger to make it easier to hit
     const currentScale = yesBtn.style.transform.replace(/[^0-9.]/g, '') || 1;
     yesBtn.style.transform = `scale(${parseFloat(currentScale) + 0.05})`;
   }
@@ -189,7 +212,6 @@
       <div class="signature">— Forever Yours</div>
     `;
   });
-  //   
 </script>
 </body>
 </html>
